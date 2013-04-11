@@ -79,6 +79,7 @@ class WeDevs_Settings_API_Test {
                     'sanitize_callback' => 'intval'
                 ),
                 array(
+                    'name' => 'desc1',
                     'desc' => __( 'HTML description', 'wedevs' ),
                     'type' => 'html'
                 ),
@@ -93,6 +94,11 @@ class WeDevs_Settings_API_Test {
                     'label' => __( 'Checkbox', 'wedevs' ),
                     'desc' => __( 'Checkbox Label', 'wedevs' ),
                     'type' => 'checkbox'
+                ),
+                array(
+                    'name' => 'desc2',
+                    'desc' => __( 'HTML description 2', 'wedevs' ),
+                    'type' => 'html'
                 ),
                 array(
                     'name' => 'radio',

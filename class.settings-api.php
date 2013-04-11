@@ -32,13 +32,13 @@ class WeDevs_Settings_API {
     private static $_instance;
 
     public function __construct() {
-        add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+        add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_enqueue_scripts' ) );
     }
 
     /**
      * Enqueue scripts and styles
      */
-    function admin_enqueue_scripts() {
+    public static function admin_enqueue_scripts() {
         wp_enqueue_script( 'jquery' );
         wp_enqueue_script( 'media-upload' );
         wp_enqueue_script( 'thickbox' );
@@ -49,7 +49,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $sections setting sections array
      */
-    function set_sections( $sections ) {
+    public function set_sections( $sections ) {
         $this->settings_sections = $sections;
 
         return $this;
@@ -60,7 +60,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $section
      */
-    function add_section( $section ) {
+    public function add_section( $section ) {
         $this->settings_sections[] = $section;
 
         return $this;
@@ -71,13 +71,13 @@ class WeDevs_Settings_API {
      *
      * @param array   $fields settings fields array
      */
-    function set_fields( $fields ) {
+    public function set_fields( $fields ) {
         $this->settings_fields = $fields;
 
         return $this;
     }
 
-    function add_field( $section, $field ) {
+    public function add_field( $section, $field ) {
         $defaults = array(
             'name' => '',
             'label' => '',
@@ -99,7 +99,7 @@ class WeDevs_Settings_API {
      * This function gets the initiated settings sections and fields. Then
      * registers them to WordPress and ready for use.
      */
-    function admin_init() {
+    public function admin_init() {
         //register settings sections
         foreach ( $this->settings_sections as $section ) {
             if ( false == get_option( $section['id'] ) ) {
@@ -119,8 +119,9 @@ class WeDevs_Settings_API {
         //register settings fields
         foreach ( $this->settings_fields as $section => $field ) {
             foreach ( $field as $option ) {
-
-                $type = isset( $option['type'] ) ? $option['type'] : 'text';
+                $option['type']  = isset( $option['type'] ) ? $option['type'] : 'text';
+                $option['name']  = isset( $option['name'] ) ? $option['name'] : '';
+                $option['label'] = isset( $option['label'] ) ? $option['label'] : '';
 
                 $args = array(
                     'id' => $option['name'],
@@ -132,7 +133,8 @@ class WeDevs_Settings_API {
                     'std' => isset( $option['default'] ) ? $option['default'] : '',
                     'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
                 );
-                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $type ), $section, $section, $args );
+                
+                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $option['type'] ), $section, $section, $args );
             }
         }
 
@@ -147,8 +149,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_text( $args ) {
-
+    public function callback_text( $args ) {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
@@ -163,8 +164,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_checkbox( $args ) {
-
+    public function callback_checkbox( $args ) {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 
         $html = sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', $args['section'], $args['id'] );
@@ -179,8 +179,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_multicheck( $args ) {
-
+    public function callback_multicheck( $args ) {
         $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 
         $html = '';
@@ -199,8 +198,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_radio( $args ) {
-
+    public function callback_radio( $args ) {
         $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 
         $html = '';
@@ -218,8 +216,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_select( $args ) {
-
+    public function callback_select( $args ) {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
@@ -238,8 +235,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_textarea( $args ) {
-
+    public function callback_textarea( $args ) {
         $value = esc_textarea( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
@@ -254,7 +250,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_html( $args ) {
+    public function callback_html( $args ) {
         echo $args['desc'];
     }
 
@@ -263,7 +259,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_wysiwyg( $args ) {
+    public function callback_wysiwyg( $args ) {
 
         $value = wpautop( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
@@ -282,8 +278,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_file( $args ) {
-
+    public function callback_file( $args ) {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
         $id = $args['section']  . '[' . $args['id'] . ']';
@@ -318,8 +313,7 @@ class WeDevs_Settings_API {
      *
      * @param array   $args settings field args
      */
-    function callback_password( $args ) {
-
+    public function callback_password( $args ) {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
@@ -332,7 +326,11 @@ class WeDevs_Settings_API {
     /**
      * Sanitize callback for Settings API
      */
-    function sanitize_options( $options ) {
+    public function sanitize_options( $options ) {
+        if ( empty($options) ) {
+            return $options;
+        }
+        
         foreach( $options as $option_slug => $option_value ) {
             $sanitize_callback = $this->get_sanitize_callback( $option_slug );
 
@@ -348,6 +346,7 @@ class WeDevs_Settings_API {
                 continue;
             }
         }
+
         return $options;
     }
 
@@ -358,18 +357,23 @@ class WeDevs_Settings_API {
      *
      * @return mixed string or bool false
      */
-    function get_sanitize_callback( $slug = '' ) {
-        if ( empty( $slug ) )
+    public function get_sanitize_callback( $slug = '' ) {
+        if ( empty( $slug ) ) {
             return false;
+        }
+
         // Iterate over registered fields and see if we can find proper callback
         foreach( $this->settings_fields as $section => $options ) {
             foreach ( $options as $option ) {
-                if ( $option['name'] != $slug )
+                if ( $option['name'] != $slug ) {
                     continue;
+                }
+
                 // Return the callback name
                 return isset( $option['sanitize_callback'] ) && is_callable( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : false;
             }
         }
+
         return false;
     }
 
@@ -381,8 +385,7 @@ class WeDevs_Settings_API {
      * @param string  $default default text if it's not found
      * @return string
      */
-    function get_option( $option, $section, $default = '' ) {
-
+    public function get_option( $option, $section, $default = '' ) {
         $options = get_option( $section );
 
         if ( isset( $options[$option] ) ) {
@@ -397,7 +400,7 @@ class WeDevs_Settings_API {
      *
      * Shows all the settings section labels as tab
      */
-    function show_navigation() {
+    public function show_navigation() {
         $html = '<h2 class="nav-tab-wrapper">';
 
         foreach ( $this->settings_sections as $tab ) {
@@ -414,7 +417,7 @@ class WeDevs_Settings_API {
      *
      * This function displays every sections in a different form
      */
-    function show_forms() {
+    public function show_forms() {
         ?>
         <div class="metabox-holder">
             <div class="postbox">
@@ -444,7 +447,7 @@ class WeDevs_Settings_API {
      *
      * This code uses localstorage for displaying active tabs
      */
-    function script() {
+    public function script() {
         ?>
         <script>
             jQuery(document).ready(function($) {

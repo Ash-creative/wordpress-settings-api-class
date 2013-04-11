@@ -387,11 +387,9 @@ class WeDevs_Settings_API {
      */
     public function show_navigation() {
         $html = '<h2 class="nav-tab-wrapper">';
-
-        foreach ( $this->settings_sections as $tab ) {
-            $html .= sprintf( '<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>', $tab['id'], $tab['title'] );
-        }
-
+            foreach ( $this->settings_sections as $tab ) {
+                $html .= sprintf( '<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>', $tab['id'], $tab['title'] );
+            }
         $html .= '</h2>';
 
         echo $html;
@@ -406,7 +404,7 @@ class WeDevs_Settings_API {
         ?>
         <div class="metabox-holder">
             <div class="postbox">
-                <?php foreach ( $this->settings_sections as $form ) { ?>
+                <?php foreach ( $this->settings_sections as $form ) : ?>
                     <div id="<?php echo $form['id']; ?>" class="group">
                         <form method="post" action="options.php">
 
@@ -415,12 +413,12 @@ class WeDevs_Settings_API {
                             <?php do_settings_sections( $form['id'] ); ?>
                             <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
 
-                            <div style="padding-left: 10px">
+                            <div class="inside">
                                 <?php submit_button(); ?>
                             </div>
                         </form>
                     </div>
-                <?php } ?>
+                <?php endforeach; ?>
             </div>
         </div>
         <?php

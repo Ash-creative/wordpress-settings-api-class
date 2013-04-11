@@ -100,6 +100,10 @@ class WeDevs_Settings_API {
     public function admin_init() {
         //register settings sections
         foreach ( $this->settings_sections as $section ) {
+            if ( empty($section['id']) ) {
+               continue;
+            }
+
             if ( false == get_option( $section['id'] ) ) {
                 add_option( $section['id'] );
             }
@@ -261,7 +265,6 @@ class WeDevs_Settings_API {
      * @param array   $args settings field args
      */
     public function callback_wysiwyg( $args ) {
-
         $value = wpautop( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
 

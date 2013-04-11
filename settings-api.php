@@ -45,15 +45,18 @@ class WeDevs_Settings_API_Test {
         $sections = array(
             array(
                 'id' => 'wedevs_basics',
-                'title' => __( 'Basic Settings', 'wedevs' )
+                'title' => __( 'Basic Settings', 'wedevs' ),
+                'desc' => __( 'Basic Settings description', 'wedevs' )
             ),
             array(
                 'id' => 'wedevs_advanced',
-                'title' => __( 'Advanced Settings', 'wedevs' )
+                'title' => __( 'Advanced Settings', 'wedevs' ),
+                'desc' => __( 'Advanced Settings description', 'wedevs' )
             ),
             array(
                 'id' => 'wedevs_others',
-                'title' => __( 'Other Settings', 'wpuf' )
+                'title' => __( 'Other Settings', 'wpuf' ),
+                'desc' => __( 'Other Settings description', 'wedevs' )
             )
         );
         return $sections;

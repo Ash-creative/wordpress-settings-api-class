@@ -28,3 +28,12 @@ Screenshots
 ----------------------
 
 ![Option Panel](https://github.com/tareq1988/wordpress-settings-api-class/raw/master/screenshot-1.png "The options panel build on the fly using the PHP Class")
+
+TODO
+----------------------
+
+ * More options for each fields
+ * Label 2 for checkbox
+ * Remove TABS js for classic switching... 
+ * Allow to split metabox
+ * Repeaters ?

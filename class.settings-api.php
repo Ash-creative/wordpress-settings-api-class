@@ -117,8 +117,11 @@ class WeDevs_Settings_API {
         //register settings fields
         foreach ( $this->settings_fields as $section => $field ) {
             foreach ( $field as $option ) {
+                if ( empty($option['name']) ) {
+                    continue;
+                }
+
                 $option['type']  = isset( $option['type'] ) ? $option['type'] : 'text';
-                $option['name']  = isset( $option['name'] ) ? $option['name'] : '';
                 $option['label'] = isset( $option['label'] ) ? $option['label'] : '';
 
                 $args = array(

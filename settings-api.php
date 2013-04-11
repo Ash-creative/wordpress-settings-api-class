@@ -79,6 +79,10 @@ class WeDevs_Settings_API_Test {
                     'sanitize_callback' => 'intval'
                 ),
                 array(
+                    'desc' => __( 'HTML description', 'wedevs' ),
+                    'type' => 'html'
+                ),
+                array(
                     'name' => 'textarea',
                     'label' => __( 'Textarea Input', 'wedevs' ),
                     'desc' => __( 'Textarea description', 'wedevs' ),
@@ -145,6 +149,13 @@ class WeDevs_Settings_API_Test {
                     'desc' => __( 'Text input description', 'wedevs' ),
                     'type' => 'text',
                     'default' => 'Title'
+                ),
+                array(
+                    'name' => 'wysiwyg',
+                    'label' => __( 'WYSIWYG Label', 'wedevs' ),
+                    'desc' => __( 'WYSIWYG description', 'wedevs' ),
+                    'type' => 'wysiwyg',
+                    'default' => 'WYSIWYG Content'
                 ),
                 array(
                     'name' => 'textarea',

@@ -42,6 +42,10 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                     'default' => 'Title'
                 ),
                 array(
+                    'desc' => __( 'HTML description', 'wedevs' ),
+                    'type' => 'html'
+                ),
+                array(
                     'name' => 'textarea',
                     'label' => __( 'Textarea Input', 'wedevs' ),
                     'desc' => __( 'Textarea description', 'wedevs' ),

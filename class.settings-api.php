@@ -32,16 +32,14 @@ class WeDevs_Settings_API {
     private static $_instance;
 
     public function __construct() {
-        add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_enqueue_scripts' ) );
+        add_action( 'admin_init', array( __CLASS__, 'wp_enqueue_media' ) );
     }
 
     /**
      * Enqueue scripts and styles
      */
-    public static function admin_enqueue_scripts() {
-        wp_enqueue_script( 'jquery' );
-        wp_enqueue_script( 'media-upload' );
-        wp_enqueue_script( 'thickbox' );
+    public static function wp_enqueue_media() {
+        wp_enqueue_media();
     }
 
     /**
@@ -133,7 +131,7 @@ class WeDevs_Settings_API {
                     'std' => isset( $option['default'] ) ? $option['default'] : '',
                     'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
                 );
-                
+
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $option['type'] ), $section, $section, $args );
             }
         }
@@ -266,7 +264,7 @@ class WeDevs_Settings_API {
 
         echo '<div style="width: ' . $size . ';">';
 
-        wp_editor( $value, $args['section'] . '[' . $args['id'] . ']', array( 'teeny' => true, 'textarea_rows' => 10 ) );
+        wp_editor( $value, $args['section'] . '[' . $args['id'] . ']', array( 'teeny' => false, 'textarea_rows' => 10 ) );
 
         echo '</div>';
 
@@ -282,27 +280,8 @@ class WeDevs_Settings_API {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
         $id = $args['section']  . '[' . $args['id'] . ']';
-        $js_id = $args['section']  . '\\\\[' . $args['id'] . '\\\\]';
-        $html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
-        $html .= '<input type="button" class="button wpsf-browse" id="'. $id .'_button" value="Browse" />
-        <script type="text/javascript">
-        jQuery(document).ready(function($){
-            $("#'. $js_id .'_button").click(function() {
-                tb_show("", "media-upload.php?post_id=0&amp;type=image&amp;TB_iframe=true");
-                window.original_send_to_editor = window.send_to_editor;
-                window.send_to_editor = function(html) {
-                    var url = $(html).attr(\'href\');
-                    if ( !url ) {
-                        url = $(html).attr(\'src\');
-                    };
-                    $("#'. $js_id .'").val(url);
-                    tb_remove();
-                    window.send_to_editor = window.original_send_to_editor;
-                };
-                return false;
-            });
-        });
-        </script>';
+        $html  = sprintf( '<input type="text" class="%1$s-text wpsf-url" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html .= '<input type="button" class="button wpsf-browse" value="'.__('Browse').'" />';
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
@@ -439,7 +418,8 @@ class WeDevs_Settings_API {
             </div>
         </div>
         <?php
-        $this->script();
+        self::script();
+        self::script_medias();
     }
 
     /**
@@ -447,9 +427,9 @@ class WeDevs_Settings_API {
      *
      * This code uses localstorage for displaying active tabs
      */
-    public function script() {
+    public static function script() {
         ?>
-        <script>
+        <script type="text/javascript">
             jQuery(document).ready(function($) {
                 // Switches option sections
                 $('.group').hide();
@@ -491,6 +471,55 @@ class WeDevs_Settings_API {
                     evt.preventDefault();
                 });
             });
+        </script>
+        <?php
+    }
+
+    /**
+     * Tabbable JavaScript codes
+     *
+     * This code uses localstorage for displaying active tabs
+     */
+    public static function script_medias() {
+        ?>
+        <script type="text/javascript">
+        jQuery(document).ready(function($){
+            var file_frame;
+            jQuery(".wpsf-browse").live("click", function (event) {
+                event.preventDefault();
+
+                // current button
+                var current_button = jQuery(this);
+
+                // If the media frame already exists, reopen it.
+                if (file_frame) {
+                    // Open frame
+                    file_frame.open();
+                    return false;
+                }
+
+                // Create the media frame.
+                file_frame = wp.media.frames.file_frame = wp.media({
+                    title: current_button.data("uploader_title"),
+                    button: {
+                        text: current_button.data("uploader_button_text"),
+                    },
+                    multiple: false // Set to true to allow multiple files to be selected
+                });
+
+                // When an image is selected, run a callback.
+                file_frame.on("select", function () {
+                    // We set multiple to false so only get one image from the uploader
+                    attachment = file_frame.state().get("selection").first().toJSON();
+
+                    // Do something with attachment.id and/or attachment.url here
+                    current_button.prev('.wpsf-url').val(attachment.url);
+                });
+
+                // Finally, open the modal
+                file_frame.open();
+            });
+        });
         </script>
         <?php
     }

@@ -9,7 +9,6 @@
  */
 if ( !class_exists( 'WeDevs_Settings_API' ) ):
 class WeDevs_Settings_API {
-
     /**
      * settings sections array
      *
@@ -24,22 +23,7 @@ class WeDevs_Settings_API {
      */
     private $settings_fields = array();
 
-    /**
-     * Singleton instance
-     *
-     * @var object
-     */
-    private static $_instance;
-
     public function __construct() {
-        add_action( 'admin_init', array( __CLASS__, 'wp_enqueue_media' ) );
-    }
-
-    /**
-     * Enqueue scripts and styles
-     */
-    public static function wp_enqueue_media() {
-        wp_enqueue_media();
     }
 
     /**
@@ -49,7 +33,6 @@ class WeDevs_Settings_API {
      */
     public function set_sections( $sections ) {
         $this->settings_sections = $sections;
-
         return $this;
     }
 
@@ -60,7 +43,6 @@ class WeDevs_Settings_API {
      */
     public function add_section( $section ) {
         $this->settings_sections[] = $section;
-
         return $this;
     }
 
@@ -71,10 +53,15 @@ class WeDevs_Settings_API {
      */
     public function set_fields( $fields ) {
         $this->settings_fields = $fields;
-
         return $this;
     }
 
+    /**
+     * Add setting field
+     *
+     * @param array   $section settings name
+     * @param array   $fields settings fields array
+     */
     public function add_field( $section, $field ) {
         $defaults = array(
             'name' => '',
@@ -98,7 +85,7 @@ class WeDevs_Settings_API {
      * registers them to WordPress and ready for use.
      */
     public function admin_init() {
-        //register settings sections
+        // register settings sections
         foreach ( $this->settings_sections as $section ) {
             if ( empty($section['id']) ) {
                continue;
@@ -118,7 +105,7 @@ class WeDevs_Settings_API {
             add_settings_section( $section['id'], $section['title'], $callback, $section['id'] );
         }
 
-        //register settings fields
+        // register settings fields
         foreach ( $this->settings_fields as $section => $field ) {
             foreach ( $field as $option ) {
                 if ( empty($option['name']) ) {
@@ -156,9 +143,9 @@ class WeDevs_Settings_API {
      */
     public function callback_text( $args ) {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html  = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
@@ -172,7 +159,7 @@ class WeDevs_Settings_API {
     public function callback_checkbox( $args ) {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 
-        $html = sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', $args['section'], $args['id'] );
+        $html  = sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', $args['section'], $args['id'] );
         $html .= sprintf( '<input type="checkbox" class="checkbox" id="%1$s[%2$s]" name="%1$s[%2$s]" value="on"%4$s />', $args['section'], $args['id'], $value, checked( $value, 'on', false ) );
         $html .= sprintf( '<label for="%1$s[%2$s]"> %3$s</label>', $args['section'], $args['id'], $args['desc'] );
 
@@ -223,11 +210,11 @@ class WeDevs_Settings_API {
      */
     public function callback_select( $args ) {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html = sprintf( '<select class="%1$s" name="%2$s[%3$s]" id="%2$s[%3$s]">', $size, $args['section'], $args['id'] );
+        $html  = sprintf( '<select class="%1$s" name="%2$s[%3$s]" id="%2$s[%3$s]">', $size, $args['section'], $args['id'] );
         foreach ( $args['options'] as $key => $label ) {
-            $html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $value, $key, false ), $label );
+            $html .= sprintf( '<option value="%s"%s>%s</option>', esc_attr($key), selected( $value, $key, false ), $label );
         }
         $html .= sprintf( '</select>' );
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
@@ -242,9 +229,9 @@ class WeDevs_Settings_API {
      */
     public function callback_textarea( $args ) {
         $value = esc_textarea( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]">%4$s</textarea>', $size, $args['section'], $args['id'], $value );
+        $html  = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]">%4$s</textarea>', $size, $args['section'], $args['id'], $value );
         $html .= sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
@@ -266,12 +253,10 @@ class WeDevs_Settings_API {
      */
     public function callback_wysiwyg( $args ) {
         $value = wpautop( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
+        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
 
         echo '<div style="width: ' . $size . ';">';
-
-        wp_editor( $value, $args['section'] . '[' . $args['id'] . ']', array( 'teeny' => false, 'textarea_rows' => 10 ) );
-
+         wp_editor( $value, $args['section'] . '[' . $args['id'] . ']', array( 'teeny' => false, 'textarea_rows' => 10 ) );
         echo '</div>';
 
         echo sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
@@ -283,11 +268,16 @@ class WeDevs_Settings_API {
      * @param array   $args settings field args
      */
     public function callback_file( $args ) {
+        // Enqueue JS for medias uploader
+        wp_enqueue_media();
+        add_action( 'admin_footer', array( __CLASS__, 'script_medias' ) );
+
+        // Build HTML
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
-        $id = $args['section']  . '[' . $args['id'] . ']';
+        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        
         $html  = sprintf( '<input type="text" class="%1$s-text wpsf-url" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
-        $html .= '<input type="button" class="button wpsf-browse" value="'.__('Browse').'" />';
+        $html .= '<input type="button" class="button wpsf-browse hide-if-no-js" value="'.__('Browse').'" />';
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
@@ -300,9 +290,9 @@ class WeDevs_Settings_API {
      */
     public function callback_password( $args ) {
         $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html = sprintf( '<input type="password" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html  = sprintf( '<input type="password" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
@@ -372,7 +362,6 @@ class WeDevs_Settings_API {
      */
     public function get_option( $option, $section, $default = '' ) {
         $options = get_option( $section );
-
         if ( isset( $options[$option] ) ) {
             return $options[$option];
         }
@@ -386,9 +375,15 @@ class WeDevs_Settings_API {
      * Shows all the settings section labels as tab
      */
     public function show_navigation() {
+        $current_tab = ( isset($_GET['tab']) ) ? $_GET['tab'] : '';
+
         $html = '<h2 class="nav-tab-wrapper">';
+            $i = 0;
             foreach ( $this->settings_sections as $tab ) {
-                $html .= sprintf( '<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>', $tab['id'], $tab['title'] );
+                $i++;
+
+                $class = ( $current_tab == $tab['id'] || ($current_tab == '' && $i == 1) ) ? 'nav-tab-active' : '';
+                $html .= sprintf( '<a href="%1$s" class="nav-tab %2$s" id="%3$s-tab">%4$s</a>', add_query_arg( array('tab' => $tab['id'] ) ), $class, $tab['id'], $tab['title'] );
             }
         $html .= '</h2>';
 
@@ -401,106 +396,63 @@ class WeDevs_Settings_API {
      * This function displays every sections in a different form
      */
     public function show_forms() {
+        $form = false;
+
+        // Load tab specify on URL ?
+        if( isset($_GET['tab']) ) {
+            foreach ( $this->settings_sections as $settings_section ) {
+                if( $settings_section['id'] == $_GET['tab'] ) {
+                    $form = $settings_section;
+                    break;
+                }
+            }
+            reset($this->settings_sections);
+        }
+        
+        // No current tab ? Take first
+        if ( empty($form) ) {
+            foreach ( $this->settings_sections as $settings_section ) {
+                $form = $settings_section;
+                break;
+            }
+        }
+        
+        // No form to display, no valid section
+        if ( empty($form) ) {
+            wp_die(__('No section available'));
+        }
         ?>
         <div class="metabox-holder">
             <div class="postbox">
-                <?php foreach ( $this->settings_sections as $form ) : ?>
-                    <div id="<?php echo $form['id']; ?>" class="group">
-                        <form method="post" action="options.php">
+                <div id="<?php echo $form['id']; ?>" class="group">
+                    <form method="post" action="options.php">
+                        <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
+                        <?php settings_fields( $form['id'] ); ?>
+                        <?php do_settings_sections( $form['id'] ); ?>
+                        <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
 
-                            <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
-                            <?php settings_fields( $form['id'] ); ?>
-                            <?php do_settings_sections( $form['id'] ); ?>
-                            <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
-
-                            <div class="inside">
-                                <?php submit_button(); ?>
-                            </div>
-                        </form>
-                    </div>
-                <?php endforeach; ?>
+                        <div class="inside">
+                            <?php submit_button(); ?>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
         <?php
-        self::script();
-        self::script_medias();
     }
 
     /**
-     * Tabbable JavaScript codes
-     *
-     * This code uses localstorage for displaying active tabs
-     */
-    public static function script() {
-        ?>
-        <script type="text/javascript">
-            jQuery(document).ready(function($) {
-                // Switches option sections
-                $('.group').hide();
-                var activetab = '';
-                if (typeof(localStorage) != 'undefined' ) {
-                    activetab = localStorage.getItem("activetab");
-                }
-                if (activetab != '' && $(activetab).length ) {
-                    $(activetab).fadeIn();
-                } else {
-                    $('.group:first').fadeIn();
-                }
-                $('.group .collapsed').each(function(){
-                    $(this).find('input:checked').parent().parent().parent().nextAll().each(
-                    function(){
-                        if ($(this).hasClass('last')) {
-                            $(this).removeClass('hidden');
-                            return false;
-                        }
-                        $(this).filter('.hidden').removeClass('hidden');
-                    });
-                });
-
-                if (activetab != '' && $(activetab + '-tab').length ) {
-                    $(activetab + '-tab').addClass('nav-tab-active');
-                }
-                else {
-                    $('.nav-tab-wrapper a:first').addClass('nav-tab-active');
-                }
-                $('.nav-tab-wrapper a').click(function(evt) {
-                    $('.nav-tab-wrapper a').removeClass('nav-tab-active');
-                    $(this).addClass('nav-tab-active').blur();
-                    var clicked_group = $(this).attr('href');
-                    if (typeof(localStorage) != 'undefined' ) {
-                        localStorage.setItem("activetab", $(this).attr('href'));
-                    }
-                    $('.group').hide();
-                    $(clicked_group).fadeIn();
-                    evt.preventDefault();
-                });
-            });
-        </script>
-        <?php
-    }
-
-    /**
-     * Tabbable JavaScript codes
-     *
-     * This code uses localstorage for displaying active tabs
+     * Register JS action for new media uploader from WP 3.5
+     * 
      */
     public static function script_medias() {
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($){
             var file_frame;
-            jQuery(".wpsf-browse").live("click", function (event) {
+            jQuery(".form-table").on("click", "input.wpsf-browse", function (event) {
                 event.preventDefault();
-
-                // current button
-                var current_button = jQuery(this);
-
-                // If the media frame already exists, reopen it.
-                if (file_frame) {
-                    // Open frame
-                    file_frame.open();
-                    return false;
-                }
+                current_button = jQuery(this);
 
                 // Create the media frame.
                 file_frame = wp.media.frames.file_frame = wp.media({
@@ -517,7 +469,7 @@ class WeDevs_Settings_API {
                     attachment = file_frame.state().get("selection").first().toJSON();
 
                     // Do something with attachment.id and/or attachment.url here
-                    current_button.prev('.wpsf-url').val(attachment.url);
+                    current_button.prev('input.wpsf-url').val(attachment.url);
                 });
 
                 // Finally, open the modal

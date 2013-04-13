@@ -7,6 +7,7 @@
  * @author Tareq Hasan <tareq@weDevs.com>
  */
 
+require_once dirname( __FILE__ ) . '/class.settings-api.php';
 
 /**
  * Registers settings section and fields
@@ -242,15 +243,16 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                 )
             )
         );
-
-        $settings_api = WeDevs_Settings_API::getInstance();
+        
+        global $my_settings_api;
+        $my_settings_api = new WeDevs_Settings_API;
 
         //set sections and fields
-        $settings_api->set_sections( $sections );
-        $settings_api->set_fields( $fields );
+        $my_settings_api->set_sections( $sections );
+        $my_settings_api->set_fields( $fields );
 
         //initialize them
-        $settings_api->admin_init();
+        $my_settings_api->admin_init();
     }
 endif;
 add_action( 'admin_init', 'wedevs_admin_init' );
@@ -260,7 +262,7 @@ if ( !function_exists( 'wedevs_admin_menu' ) ):
      * Register the plugin page
      */
     function wedevs_admin_menu() {
-        add_options_page( 'Settings API', 'Settings API', 'delete_posts', 'settings_api_test', 'wedevs_plugin_page' );
+        add_options_page( 'Settings API', 'Settings API', 'manage_options', 'settings_api_test', 'wedevs_plugin_page' );
     }
 endif;
 add_action( 'admin_menu', 'wedevs_admin_menu' );
@@ -270,13 +272,13 @@ add_action( 'admin_menu', 'wedevs_admin_menu' );
  */
 if ( !function_exists( 'wedevs_plugin_page' ) ):
     function wedevs_plugin_page() {
-        $settings_api = new WeDevs_Settings_API;
+        global $my_settings_api;
 
         echo '<div class="wrap">';
         settings_errors();
 
-        $settings_api->show_navigation();
-        $settings_api->show_forms();
+        $my_settings_api->show_navigation();
+        $my_settings_api->show_forms();
 
         echo '</div>';
     }

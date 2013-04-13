@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name: WordPress Settings API
  * Plugin URI: http://tareq.wedevs.com/2012/06/wordpress-settings-api-php-class/
@@ -8,6 +7,7 @@
  * Author URI: http://tareq.weDevs.com
  * Version: 0.1
  */
+
 require_once dirname( __FILE__ ) . '/class.settings-api.php';
 
 /**
@@ -17,7 +17,6 @@ require_once dirname( __FILE__ ) . '/class.settings-api.php';
  */
 if ( !class_exists('WeDevs_Settings_API_Test' ) ):
 class WeDevs_Settings_API_Test {
-
     private $settings_api;
 
     function __construct() {
@@ -28,7 +27,6 @@ class WeDevs_Settings_API_Test {
     }
 
     function admin_init() {
-
         //set the settings
         $this->settings_api->set_sections( $this->get_settings_sections() );
         $this->settings_api->set_fields( $this->get_settings_fields() );
@@ -38,7 +36,7 @@ class WeDevs_Settings_API_Test {
     }
 
     function admin_menu() {
-        add_options_page( 'Settings API', 'Settings API', 'delete_posts', 'settings_api_test', array($this, 'plugin_page') );
+        add_options_page( 'Settings API', 'Settings API', 'manage_options', 'settings_api_test', array($this, 'plugin_page') );
     }
 
     function get_settings_sections() {
@@ -144,6 +142,13 @@ class WeDevs_Settings_API_Test {
                     'name' => 'file',
                     'label' => __( 'File', 'wedevs' ),
                     'desc' => __( 'File description', 'wedevs' ),
+                    'type' => 'file',
+                    'default' => ''
+                ),
+                array(
+                    'name' => 'file2',
+                    'label' => __( 'File 2', 'wedevs' ),
+                    'desc' => __( 'File 2 description', 'wedevs' ),
                     'type' => 'file',
                     'default' => ''
                 )

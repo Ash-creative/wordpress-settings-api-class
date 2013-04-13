@@ -34,6 +34,5 @@ TODO
 
  * More options for each fields
  * Label 2 for checkbox
- * Remove TABS js for classic switching... 
  * Allow to split metabox
  * Repeaters ?

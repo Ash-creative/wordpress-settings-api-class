@@ -23,6 +23,9 @@ class WeDevs_Settings_API {
      */
     private $settings_fields = array();
 
+    /**
+     * Constructor, do nothing here
+     */
     public function __construct() {
     }
 
@@ -33,7 +36,7 @@ class WeDevs_Settings_API {
      */
     public function set_sections( $sections ) {
         $this->settings_sections = $sections;
-        return $this;
+        return true;
     }
 
     /**
@@ -43,7 +46,7 @@ class WeDevs_Settings_API {
      */
     public function add_section( $section ) {
         $this->settings_sections[] = $section;
-        return $this;
+        return true;
     }
 
     /**
@@ -53,7 +56,7 @@ class WeDevs_Settings_API {
      */
     public function set_fields( $fields ) {
         $this->settings_fields = $fields;
-        return $this;
+        return true;
     }
 
     /**
@@ -63,17 +66,23 @@ class WeDevs_Settings_API {
      * @param array   $fields settings fields array
      */
     public function add_field( $section, $field ) {
-        $defaults = array(
+        // Check if section exist before add
+        if ( !isset($this->settings_fields[$section]) || !is_array($this->settings_fields[$section]) ) {
+            $this->settings_fields[$section] = array();
+        }
+
+        // Set default values
+        $args = wp_parse_args( $field, array(
             'name' => '',
             'label' => '',
             'desc' => '',
             'type' => 'text'
-        );
+        ) );
 
-        $arg = wp_parse_args( $field, $defaults );
-        $this->settings_fields[$section][] = $arg;
+        // Add settings into section array
+        $this->settings_fields[$section][] = $args;
 
-        return $this;
+        return true;
     }
 
     /**
@@ -132,6 +141,10 @@ class WeDevs_Settings_API {
 
         // creates our settings in the options table
         foreach ( $this->settings_sections as $section ) {
+            if ( empty($section['id']) ) {
+               continue;
+            }
+
             register_setting( $section['id'], $section['id'], array( $this, 'sanitize_options' ) );
         }
     }
@@ -379,11 +392,15 @@ class WeDevs_Settings_API {
 
         $html = '<h2 class="nav-tab-wrapper">' . PHP_EOL;
             $i = 0;
-            foreach ( $this->settings_sections as $tab ) {
+            foreach ( $this->settings_sections as $section ) {
+                if ( empty($section['id']) ) {
+                   continue;
+                }
+
                 $i++;
 
-                $class = ( $current_tab == $tab['id'] || ($current_tab == '' && $i == 1) ) ? 'nav-tab-active' : '';
-                $html .= sprintf( '<a href="%1$s" class="nav-tab %2$s" id="%3$s-tab">%4$s</a>' . PHP_EOL, add_query_arg( array('tab' => $tab['id'] ) ), $class, $tab['id'], $tab['title'] );
+                $class = ( $current_tab == $section['id'] || ($current_tab == '' && $i == 1) ) ? 'nav-tab-active' : '';
+                $html .= sprintf( '<a href="%1$s" class="nav-tab %2$s" id="%3$s-tab">%4$s</a>' . PHP_EOL, add_query_arg( array('tab' => $section['id'] ) ), $class, $section['id'], $section['title'] );
             }
         $html .= '</h2>' . PHP_EOL;
 
@@ -399,10 +416,10 @@ class WeDevs_Settings_API {
         $form = false;
 
         // Load tab specify on URL ?
-        if( isset($_GET['tab']) ) {
-            foreach ( $this->settings_sections as $settings_section ) {
-                if( $settings_section['id'] == $_GET['tab'] ) {
-                    $form = $settings_section;
+        if ( isset($_GET['tab']) ) {
+            foreach ( $this->settings_sections as $section ) {
+                if ( $section['id'] == $_GET['tab'] ) {
+                    $form = $section;
                     break;
                 }
             }
@@ -411,8 +428,8 @@ class WeDevs_Settings_API {
         
         // No current tab ? Take first
         if ( empty($form) ) {
-            foreach ( $this->settings_sections as $settings_section ) {
-                $form = $settings_section;
+            foreach ( $this->settings_sections as $section ) {
+                $form = $section;
                 break;
             }
         }

@@ -273,7 +273,8 @@ add_action( 'admin_menu', 'wedevs_admin_menu' );
 if ( !function_exists( 'wedevs_plugin_page' ) ):
     function wedevs_plugin_page() {
         global $my_settings_api;
-
+        
+        echo '<div id="icon-options-general" class="icon32"><br /></div>';
         echo '<div class="wrap">';
         settings_errors();
 

@@ -94,6 +94,11 @@ class WeDevs_Settings_API_Test {
                     'type' => 'checkbox'
                 ),
                 array(
+                    'name' => 'metabox1',
+                    'label' => __( 'Metabox title', 'wedevs' ),
+                    'type' => 'metabox'
+                ),
+                array(
                     'name' => 'desc2',
                     'desc' => __( 'HTML description 2', 'wedevs' ),
                     'type' => 'html'
@@ -302,6 +307,7 @@ class WeDevs_Settings_API_Test {
     }
 
     function plugin_page() {
+        echo '<div id="icon-options-general" class="icon32"><br></div>';
         echo '<div class="wrap">';
 
         $this->settings_api->show_navigation();

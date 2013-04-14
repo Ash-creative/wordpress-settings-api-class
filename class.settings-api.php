@@ -135,6 +135,10 @@ class WeDevs_Settings_API {
                     'sanitize_callback' => isset( $option['sanitize_callback'] ) ? $option['sanitize_callback'] : '',
                 );
 
+                if ( in_array($option['type'], array('metabox', 'html') ) ) {
+                    $args['callback_only'] = true;
+                }
+
                 add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $this, 'callback_' . $option['type'] ), $section, $section, $args );
             }
         }
@@ -193,7 +197,7 @@ class WeDevs_Settings_API {
             $html .= sprintf( '<input type="checkbox" class="checkbox" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $checked, $key, false ) ) . PHP_EOL;
             $html .= sprintf( '<label for="%1$s[%2$s][%4$s]">%3$s</label><br />', $args['section'], $args['id'], $label, $key ) . PHP_EOL;
         }
-        $html .= sprintf( '<span class="description">%s</label>', $args['desc'] ) . PHP_EOL;
+        $html .= sprintf( '<span class="description">%s</span>', $args['desc'] ) . PHP_EOL;
 
         echo $html;
     }
@@ -211,7 +215,7 @@ class WeDevs_Settings_API {
             $html .= sprintf( '<input type="radio" class="radio" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s"%4$s />', $args['section'], $args['id'], $key, checked( $value, $key, false ) ) . PHP_EOL;
             $html .= sprintf( '<label for="%1$s[%2$s][%4$s]">%3$s</label><br />', $args['section'], $args['id'], $label, $key ) . PHP_EOL;
         }
-        $html .= sprintf( '<span class="description">%s</label>', $args['desc'] ) . PHP_EOL;
+        $html .= sprintf( '<span class="description">%s</span>', $args['desc'] ) . PHP_EOL;
 
         echo $html;
     }
@@ -245,7 +249,7 @@ class WeDevs_Settings_API {
         $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
         $html  = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]">%4$s</textarea>', $size, $args['section'], $args['id'], $value ) . PHP_EOL;
-        $html .= sprintf( '<br><span class="description">%s</span>', $args['desc'] ) . PHP_EOL;
+        $html .= sprintf( '<br /><span class="description">%s</span>', $args['desc'] ) . PHP_EOL;
 
         echo $html;
     }
@@ -256,7 +260,29 @@ class WeDevs_Settings_API {
      * @param array   $args settings field args
      */
     public function callback_html( $args ) {
-        echo $args['desc'];
+        echo '<tr valign="top"><td colspan="2">';
+            echo $args['desc'];
+        echo '</td></tr>';
+    }
+
+    /**
+     * Displays a metabox for a settings field
+     *
+     * @param array   $args settings field args
+     */
+    public function callback_metabox( $args ) {
+        echo '</tbody></table>';
+        echo '</div></div>';
+
+        echo '<div class="metabox-holder"><div class="postbox" style="margin-bottom:0px;">';
+        if ( isset($args['name']) ) {
+            echo '<h3>'.$args['name'].'</h3>';  
+        }
+
+        if ( isset($args['desc']) ) {
+            echo '<div class="inside">'.$args['desc'].'</div>';
+        }
+        echo '<table class="form-table"><tbody>';
     }
 
     /**
@@ -272,7 +298,7 @@ class WeDevs_Settings_API {
          wp_editor( $value, $args['section'] . '[' . $args['id'] . ']', array( 'teeny' => false, 'textarea_rows' => 10 ) );
         echo '</div>' . PHP_EOL;
 
-        echo sprintf( '<br><span class="description">%s</span>', $args['desc'] ) . PHP_EOL;
+        echo sprintf( '<br /><span class="description">%s</span>', $args['desc'] ) . PHP_EOL;
     }
 
     /**
@@ -400,7 +426,7 @@ class WeDevs_Settings_API {
                 $i++;
 
                 $class = ( $current_tab == $section['id'] || ($current_tab == '' && $i == 1) ) ? 'nav-tab-active' : '';
-                $html .= sprintf( '<a href="%1$s" class="nav-tab %2$s" id="%3$s-tab">%4$s</a>' . PHP_EOL, add_query_arg( array('tab' => $section['id'] ) ), $class, $section['id'], $section['title'] );
+                $html .= sprintf( '<a href="%1$s" class="nav-tab %2$s" id="%3$s-tab">%4$s</a>' . PHP_EOL, esc_url(add_query_arg( array('tab' => $section['id'] ) )), $class, $section['id'], $section['title'] );
             }
         $html .= '</h2>' . PHP_EOL;
 
@@ -439,23 +465,90 @@ class WeDevs_Settings_API {
             wp_die(__('No section available'));
         }
         ?>
-        <div class="metabox-holder">
-            <div class="postbox">
-                <div id="<?php echo $form['id']; ?>" class="group">
-                    <form method="post" action="options.php">
-                        <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
-                        <?php settings_fields( $form['id'] ); ?>
-                        <?php do_settings_sections( $form['id'] ); ?>
-                        <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
-
-                        <div class="inside">
-                            <?php submit_button(); ?>
-                        </div>
-                    </form>
+        <form method="post" action="options.php">
+            <div class="metabox-holder">
+                <div class="postbox" style="margin-bottom:0px;">
+                    <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
+                    <?php settings_fields( $form['id'] ); ?>
+                    <?php $this->do_settings_sections( $form['id'] ); ?>
+                    <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
                 </div>
             </div>
-        </div>
+            <?php submit_button(); ?>
+        </form>
         <?php
+    }
+
+    /**
+     * Prints out all settings sections added to a particular settings page
+     *
+     * Part of the Settings API. Use this in a settings page callback function
+     * to output all the sections and fields that were added to that $page with
+     * add_settings_section() and add_settings_field()
+     *
+     * @global $wp_settings_sections Storage array of all settings sections added to admin pages
+     * @global $wp_settings_fields Storage array of settings fields and info about their pages/sections
+     * @since 2.7.0
+     *
+     * @param string $page The slug name of the page whos settings sections you want to output
+     */
+    function do_settings_sections( $page ) {
+        global $wp_settings_sections, $wp_settings_fields;
+
+        if ( ! isset( $wp_settings_sections ) || !isset( $wp_settings_sections[$page] ) )
+            return;
+
+        foreach ( (array) $wp_settings_sections[$page] as $section ) {
+            if ( $section['title'] )
+                echo "<h3>{$section['title']}</h3>\n";
+
+            if ( $section['callback'] )
+                call_user_func( $section['callback'], $section );
+
+            if ( ! isset( $wp_settings_fields ) || !isset( $wp_settings_fields[$page] ) || !isset( $wp_settings_fields[$page][$section['id']] ) )
+                continue;
+            echo '<table class="form-table">';
+            $this->do_settings_fields( $page, $section['id'] );
+            echo '</table>';
+        }
+    }
+
+    /**
+     * Print out the settings fields for a particular settings section
+     *
+     * Part of the Settings API. Use this in a settings page to output
+     * a specific section. Should normally be called by do_settings_sections()
+     * rather than directly.
+     *
+     * @global $wp_settings_fields Storage array of settings fields and their pages/sections
+     *
+     * @since 2.7.0
+     *
+     * @param string $page Slug title of the admin page who's settings fields you want to show.
+     * @param section $section Slug title of the settings section who's fields you want to show.
+     */
+    function do_settings_fields($page, $section) {
+        global $wp_settings_fields;
+
+        if ( !isset($wp_settings_fields) || !isset($wp_settings_fields[$page]) || !isset($wp_settings_fields[$page][$section]) )
+            return;
+
+        foreach ( (array) $wp_settings_fields[$page][$section] as $field ) {
+            if ( isset($field['args']['callback_only']) ) {
+                call_user_func($field['callback'], $field['args']);
+                continue;
+            }
+
+            echo '<tr valign="top">';
+                if ( !empty($field['args']['label_for']) )
+                    echo '<th scope="row"><label for="' . esc_attr( $field['args']['label_for'] ) . '">' . $field['title'] . '</label></th>';
+                else
+                    echo '<th scope="row">' . $field['title'] . '</th>';
+                echo '<td>';
+                    call_user_func($field['callback'], $field['args']);
+                echo '</td>';
+            echo '</tr>';
+        }
     }
 
     /**
@@ -496,6 +589,5 @@ class WeDevs_Settings_API {
         </script>
         <?php
     }
-
 }
 endif;

@@ -33,6 +33,11 @@ TODO
 ----------------------
 
  * More options for each fields
+ 	* Inspiration : https://github.com/devinsays/options-framework-theme/blob/master/options.php
  * Label 2 for checkbox
- * Allow to split metabox
- * Repeaters ?
+ * Preview for image upload
+ 	* Split files/images upload
+ 	* Allow to save ID
+ * Security
+ 	* wp_kses
+

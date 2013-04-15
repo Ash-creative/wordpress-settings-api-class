@@ -91,7 +91,15 @@ class WeDevs_Settings_API_Test {
                     'name' => 'checkbox',
                     'label' => __( 'Checkbox', 'wedevs' ),
                     'desc' => __( 'Checkbox Label', 'wedevs' ),
-                    'type' => 'checkbox'
+                    'type' => 'checkbox',
+                ),
+                // This sample allow to have a CLICKABLE LABEL and a DESCRIPTION for a checkbox
+                array(
+                    'name' => 'checkbox1',
+                    'label' => __( 'Checkbox 1', 'wedevs' ),
+                    'desc' => __( 'Checkbox 1 Description', 'wedevs' ),
+                    'type' => 'checkbox',
+                    'options' => __( 'Checkbox 1 Label', 'wedevs' ),
                 ),
                 array(
                     'name' => 'metabox1',

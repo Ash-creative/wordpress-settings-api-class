@@ -4,7 +4,7 @@
  *
  * OOP way example is given on the "settings-api.php" file.
  *
- * Version: 0.3
+ * Version: 0.4
  * @author Tareq Hasan <tareq@weDevs.com>
  * Author URI: http://tareq.weDevs.com
  */
@@ -21,7 +21,8 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
             array(
                 'id' => 'wedevs_basics',
                 'title' => __( 'Basic Settings', 'wedevs' ),
-                'desc' => __( 'Basic Settings description', 'wedevs' )
+                'desc' => __( 'Basic Settings description', 'wedevs' ),
+                'tab_label' => __( 'Basic', 'wedevs' ),
             ),
             array(
                 'id' => 'wedevs_advanced',

@@ -2,6 +2,7 @@
 /**
  * weDevs Settings API wrapper class
  *
+ * @version 0.3
  * @author Tareq Hasan <tareq@weDevs.com>
  * @link http://tareq.weDevs.com Tareq's Planet
  * @example settings-api.php How to use the class

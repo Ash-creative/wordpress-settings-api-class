@@ -2,9 +2,11 @@
 /**
  * This page shows the procedural or functional example
  *
- * OOP way example is given on the main plugin file.
+ * OOP way example is given on the "settings-api.php" file.
  *
+ * Version: 0.3
  * @author Tareq Hasan <tareq@weDevs.com>
+ * Author URI: http://tareq.weDevs.com
  */
 
 require_once dirname( __FILE__ ) . '/class.settings-api.php';
@@ -54,6 +56,7 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                 ),
                 array(
                     'name' => 'checkbox',
+                    'label' => __( 'Checkbox', 'wedevs' ),
                     'label' => __( 'Checkbox', 'wedevs' ),
                     'desc' => __( 'Checkbox Label', 'wedevs' ),
                     'type' => 'checkbox'

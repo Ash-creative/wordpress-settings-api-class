@@ -1,19 +1,17 @@
 <?php
 /**
- * Plugin Name: WordPress Settings API
- * Plugin URI: http://tareq.wedevs.com/2012/06/wordpress-settings-api-php-class/
- * Description: WordPress Settings API testing
- * Author: Tareq Hasan
+ * Sample with PHP class usage
+ *
+ * Version: 0.3
+ * @author Tareq Hasan <tareq@weDevs.com>
  * Author URI: http://tareq.weDevs.com
- * Version: 0.1
  */
-
 require_once dirname( __FILE__ ) . '/class.settings-api.php';
 
 /**
  * WordPress settings API demo class
  *
- * @author Tareq Hasan
+ * @author Tareq Hasan <tareq@weDevs.com>
  */
 if ( !class_exists('WeDevs_Settings_API_Test' ) ):
 class WeDevs_Settings_API_Test {

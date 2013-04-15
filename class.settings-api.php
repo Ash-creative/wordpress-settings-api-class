@@ -1,5 +1,4 @@
 <?php
-
 /**
  * weDevs Settings API wrapper class
  *
@@ -377,7 +376,7 @@ class WeDevs_Settings_API {
         }
 
         // Iterate over registered fields and see if we can find proper callback
-        foreach( $this->settings_fields as $section => $options ) {
+        foreach( $this->settings_fields as $options ) {
             foreach ( $options as $option ) {
                 if ( $option['name'] != $slug ) {
                     continue;
@@ -464,19 +463,18 @@ class WeDevs_Settings_API {
         if ( empty($form) ) {
             wp_die(__('No section available'));
         }
-        ?>
-        <form method="post" action="options.php">
-            <div class="metabox-holder">
-                <div class="postbox" style="margin-bottom:0px;">
-                    <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
-                    <?php settings_fields( $form['id'] ); ?>
-                    <?php $this->do_settings_sections( $form['id'] ); ?>
-                    <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
-                </div>
-            </div>
-            <?php submit_button(); ?>
-        </form>
-        <?php
+        
+        echo '<form method="post" action="options.php">' . PHP_EOL;
+             echo '<div class="metabox-holder">' . PHP_EOL;
+                 echo '<div class="postbox" style="margin-bottom:0px;">' . PHP_EOL;
+                    do_action( 'wsa_form_top_' . $form['id'], $form );
+                    settings_fields( $form['id'] );
+                    $this->do_settings_sections( $form['id'] );
+                    do_action( 'wsa_form_bottom_' . $form['id'], $form );
+                 echo '</div>' . PHP_EOL;
+             echo '</div>' . PHP_EOL;
+            submit_button();
+        echo '</form>' . PHP_EOL;
     }
 
     /**

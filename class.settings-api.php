@@ -2,9 +2,10 @@
 /**
  * weDevs Settings API wrapper class
  *
- * @version 0.4
+ * @version 0.4.1
  * @author Tareq Hasan <tareq@weDevs.com>
- * @link http://tareq.weDevs.com Tareq's Planet
+ * @author Amaury Balmer <amaury@beapi.fr>
+ * @link https://github.com/herewithme/wordpress-settings-api-class
  * @example settings-api.php How to use the class
  */
 if ( !class_exists( 'WeDevs_Settings_API' ) ):
@@ -465,6 +466,11 @@ class WeDevs_Settings_API {
                 $html .= sprintf( '<a href="%1$s" class="nav-tab %2$s" id="%3$s-tab">%4$s</a>' . PHP_EOL, esc_url(add_query_arg( array('tab' => $section['id'] ) )), $class, $section['id'], $title );
             }
         $html .= '</h2>' . PHP_EOL;
+
+        // If only one tab, hide it
+        if ( $i == 1 ) {
+            $html = '';
+        }
 
         echo $html;
     }

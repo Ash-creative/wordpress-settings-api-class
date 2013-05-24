@@ -53,6 +53,10 @@ More about [Settings API](http://codex.wordpress.org/Settings_API).
 
 == Changelog ==
 
+= 0.4.1 =
+
+* Hide tabs navigation if only one registered
+
 = 0.4 =
 
 * Allow to specifiy custom title for tabs

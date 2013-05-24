@@ -2,9 +2,10 @@
 /**
  * Sample with PHP class usage
  *
- * Version: 0.4
+ * @version 0.4.1
  * @author Tareq Hasan <tareq@weDevs.com>
- * Author URI: http://tareq.weDevs.com
+ * @author Amaury Balmer <amaury@beapi.fr>
+ * @link https://github.com/herewithme/wordpress-settings-api-class
  */
 require_once dirname( __FILE__ ) . '/class.settings-api.php';
 

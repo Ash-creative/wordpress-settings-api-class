@@ -8,7 +8,7 @@ Version
 
 Stable : 0.3
 
-Dev : 0.4
+Dev : 0.4.1
 
 Usage Example
 ---------------
@@ -46,3 +46,4 @@ TODO
  	* Allow to save ID
  * Security
  	* wp_kses
+ 	* Replace strip_tags function by correct filter

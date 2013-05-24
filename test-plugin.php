@@ -1,7 +1,7 @@
 <?php
 /*
  Plugin Name: Settings API Class Test
- Version: 0.4
+ Version: 0.4.1
  Plugin URI: https://github.com/herewithme/wordpress-settings-api-class
  Description: Test all feature of settings API
  Author: Amaury Balmer

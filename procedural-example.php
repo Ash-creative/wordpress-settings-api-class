@@ -4,7 +4,7 @@
  *
  * OOP way example is given on the "settings-api.php" file.
  *
- * @version 0.4.1
+ * @version 0.4.2
  * @author Tareq Hasan <tareq@weDevs.com>
  * @author Amaury Balmer <amaury@beapi.fr>
  * @link https://github.com/herewithme/wordpress-settings-api-class
@@ -43,6 +43,7 @@ if ( !function_exists( 'wedevs_admin_init' ) ):
                     'name' => 'text',
                     'label' => __( 'Text Input', 'wedevs' ),
                     'desc' => __( 'Text input description', 'wedevs' ),
+                    'desc_type' => 'inline',
                     'type' => 'text',
                     'default' => 'Title'
                 ),

@@ -53,6 +53,10 @@ More about [Settings API](http://codex.wordpress.org/Settings_API).
 
 == Changelog ==
 
+= 0.4.2 =
+
+* Add possibility to make inline description (new desc_type field)
+
 = 0.4.1 =
 
 * Hide tabs navigation if only one registered

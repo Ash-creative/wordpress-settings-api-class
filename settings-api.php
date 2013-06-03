@@ -72,6 +72,7 @@ class WeDevs_Settings_API_Test {
                     'name' => 'text_val',
                     'label' => __( 'Text Input (integer validation)', 'wedevs' ),
                     'desc' => __( 'Text input description', 'wedevs' ),
+                    'desc_type' => 'inline',
                     'type' => 'text',
                     'default' => 'Title',
                     'sanitize_callback' => 'intval'

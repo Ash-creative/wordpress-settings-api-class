@@ -8,7 +8,7 @@ Version
 
 Stable : 0.3
 
-Dev : 0.4.1
+Dev : 0.4.2
 
 Usage Example
 ---------------
